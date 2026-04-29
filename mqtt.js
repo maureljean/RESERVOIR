@@ -35,7 +35,7 @@ if (typeof mqtt === "undefined") {
 // Connexion au broker HiveMQ
 // ===============================
 
-const broker = "wss://broker.hivemq.com:8884/mqtt";
+const broker = "wss://cd379a37302e44a395cfcdec341addf8.s1.eu.hivemq.cloud:8884/mqtt";
 const client = mqtt.connect(broker);
 
 // ===============================
