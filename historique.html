@@ -18,20 +18,49 @@
 
 <div class="content">
     <h1>Historique</h1>
-    <ul id="log"></ul>
+    
+    <div style="background: #f0f0f0; border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        <button onclick="clearHistory()" style="background: #ff6b6b; color: white; padding: 8px 15px; border: none; border-radius: 3px; cursor: pointer;">
+            🗑️ Vider l'historique
+        </button>
+        <span id="count" style="margin-left: 20px; font-weight: bold;"></span>
+    </div>
+    
+    <ul id="log" style="list-style-type: none; padding: 0;"></ul>
 </div>
-
-
 
 <script>
 // Afficher historique sauvegardé
 let historique = JSON.parse(localStorage.getItem("historique")) || [];
 
-historique.forEach(item => {
+const logDiv = document.getElementById("log");
+const countSpan = document.getElementById("count");
+
+if (historique.length === 0) {
     let li = document.createElement("li");
-    li.innerText = `${item.date} | ${item.topic} : ${item.valeur}`;
-    document.getElementById("log").appendChild(li);
-});
+    li.innerText = "📭 Aucun historique pour le moment";
+    li.style.padding = "10px";
+    li.style.color = "#999";
+    logDiv.appendChild(li);
+    countSpan.innerText = "Total: 0 entrées";
+} else {
+    historique.forEach((item, index) => {
+        let li = document.createElement("li");
+        li.innerText = `${item.date} | ${item.topic} : ${item.valeur}`;
+        li.style.padding = "8px";
+        li.style.borderBottom = "1px solid #ddd";
+        li.style.backgroundColor = index % 2 === 0 ? "#f9f9f9" : "white";
+        logDiv.appendChild(li);
+    });
+    countSpan.innerText = `Total: ${historique.length} entrées`;
+}
+
+function clearHistory() {
+    if (confirm("Êtes-vous sûr de vouloir vider l'historique?")) {
+        localStorage.removeItem("historique");
+        location.reload();
+    }
+}
 </script>
 
 </body>
