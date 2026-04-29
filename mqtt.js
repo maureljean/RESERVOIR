@@ -35,8 +35,24 @@ if (typeof mqtt === "undefined") {
 // Connexion au broker HiveMQ
 // ===============================
 
-const broker = "wss://broker.hivemq.com:8884/mqtt";
-const client = mqtt.connect(broker);
+const broker = "wss://cd379a37302e44a395cfcdec341addf8.s1.eu.hivemq.cloud:8884/mqtt";
+
+// Configuration pour broker privé (ajoutez vos credentials si nécessaire)
+const options = {
+    // username: "votre_username",  // Décommentez et ajoutez si nécessaire
+    // password: "votre_password",  // Décommentez et ajoutez si nécessaire
+    // clientId: "web-client-" + Math.random().toString(16).substr(2, 8),
+    // clean: true,
+    // reconnectPeriod: 1000,
+    // connectTimeout: 30000,
+    // keepalive: 60
+};
+
+const client = mqtt.connect(broker, options);
+
+// Log de tentative de connexion
+addLog("Tentative de connexion au broker TLS: " + broker, "info");
+console.log("🔄 Tentative de connexion à:", broker);
 
 // ===============================
 // Connexion
@@ -56,10 +72,23 @@ client.on("connect", () => {
 
 // Gestion des erreurs
 client.on("error", (err) => {
-    addLog("Erreur MQTT: " + err.message, "error");
+    let errorMsg = "Erreur MQTT: " + err.message;
+    
+    // Diagnostic spécifique pour TLS
+    if (err.message.includes("certificate")) {
+        errorMsg += "\n🔒 Problème de certificat SSL - vérifiez le certificat du broker";
+    } else if (err.message.includes("ECONNREFUSED")) {
+        errorMsg += "\n🚫 Connexion refusée - vérifiez l'URL et le port";
+    } else if (err.message.includes("authentication")) {
+        errorMsg += "\n🔐 Authentification requise - ajoutez username/password";
+    } else if (err.message.includes("timeout")) {
+        errorMsg += "\n⏰ Timeout - vérifiez la connectivité réseau";
+    }
+    
+    addLog(errorMsg, "error");
     console.error("❌ Erreur MQTT:", err);
     if (document.getElementById("status")) {
-        document.getElementById("status").innerText = "❌ Erreur connexion: " + err.message;
+        document.getElementById("status").innerText = "❌ Erreur: " + err.message;
     }
 });
 
