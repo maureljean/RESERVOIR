@@ -105,8 +105,6 @@ client.on("disconnect", () => {
 // ===============================
 client.on("message", (topic, message) => {
     const msg = message.toString();
-    
-    addLog(`Message reçu sur ${topic}: ${msg}`, "info");
     console.log(topic + " : " + msg);
 
     // ===== Topic: reservoir/status =====
@@ -120,7 +118,6 @@ client.on("message", (topic, message) => {
                 let el1 = document.getElementById("niveau1");
                 if (el1) {
                     el1.innerText = data.niveau1 + " %";
-                    addLog("Niveau 1 mis à jour: " + data.niveau1 + "%", "success");
                 }
             }
             
@@ -129,7 +126,6 @@ client.on("message", (topic, message) => {
                 let el2 = document.getElementById("niveau2");
                 if (el2) {
                     el2.innerText = data.niveau2 + " %";
-                    addLog("Niveau 2 mis à jour: " + data.niveau2 + "%", "success");
                 }
             }
         } catch (e) {
@@ -143,7 +139,6 @@ client.on("message", (topic, message) => {
         let notif = document.getElementById("notification");
         if (notif) {
             notif.innerText = msg;
-            addLog("Notification: " + msg, "success");
         }
     }
 
