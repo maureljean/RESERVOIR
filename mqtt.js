@@ -105,17 +105,46 @@ client.on("disconnect", () => {
 // ===============================
 client.on("message", (topic, message) => {
     const msg = message.toString();
-    // console.log(topic + " : " + msg);
+    
+    addLog(`Message reçu sur ${topic}: ${msg}`, "info");
+    console.log(topic + " : " + msg);
 
-    // Mise à jour UI (si éléments présents)
-    let el1 = document.getElementById("status");
-    if (topic === "reservoir/status" && el1) {
-        el1.innerText = msg + " %";
+    // ===== Topic: reservoir/status =====
+    if (topic === "reservoir/status") {
+        try {
+            // Parser le JSON
+            const data = JSON.parse(msg);
+            
+            // Afficher niveau1
+            if (data.niveau1 !== undefined) {
+                let el1 = document.getElementById("niveau1");
+                if (el1) {
+                    el1.innerText = data.niveau1 + " %";
+                    addLog("Niveau 1 mis à jour: " + data.niveau1 + "%", "success");
+                }
+            }
+            
+            // Afficher niveau2
+            if (data.niveau2 !== undefined) {
+                let el2 = document.getElementById("niveau2");
+                if (el2) {
+                    el2.innerText = data.niveau2 + " %";
+                    addLog("Niveau 2 mis à jour: " + data.niveau2 + "%", "success");
+                }
+            }
+        } catch (e) {
+            addLog("Erreur parsing JSON reservoir/status: " + e.message, "error");
+            console.error("Erreur JSON:", e);
+        }
     }
 
-    let notif = document.getElementById("notify");
-    if (topic === "reservoir/notify" && notif) {
-        notif.innerText = msg;
+    // ===== Topic: reservoir/notify =====
+    if (topic === "reservoir/notify") {
+        let notif = document.getElementById("notification");
+        if (notif) {
+            notif.innerText = msg;
+            addLog("Notification: " + msg, "success");
+        }
     }
 
     // Historique (localStorage)
