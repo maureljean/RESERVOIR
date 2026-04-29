@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Commandes</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="mqtt.js"></script>
+</head>
+
+<body>
+
+<div class="menu">
+    <a href="./index.html">Tableau de bord</a>
+    <a href="./commande.html">Commandes</a>
+    <a href="./historique.html">Historique</a>
+    <a href="./graphe.html">Graphes</a>
+</div>
+
+<div class="content">
+    <h1>Commandes</h1>
+
+    <div class="card">
+        <h3>EV1</h3>
+        <button class="on ev1" onclick="sendCommande('reservoir/commande/ev1','ON')">ON</button>
+        <button class="off ev1" onclick="sendCommande('reservoir/commande/ev1','OFF')">OFF</button>
+    </div>
+
+    <div class="card">
+        <h3>EV2</h3>
+        <button class="on ev2" onclick="sendCommande('reservoir/commande/ev2','ON')">ON</button>
+        <button class="off ev2" onclick="sendCommande('reservoir/commande/ev2','OFF')">OFF</button>
+    </div>
+</div>
+
+
+
+</body>
+<script type="module">
+    // import {envoyerCommande} from "./mqtt.js";
+
+    // document.querySelector(".on.ev1").addEventListener('click',envoyerCommande('reservoir/commande/ev1','ON'));
+    // document.querySelector(".off.ev1").addEventListener('click',envoyerCommande('reservoir/commande/ev1','OFF'));
+    
+    // document.querySelector(".on.ev2").addEventListener('click',envoyerCommande('reservoir/commande/ev2','ON'));
+    // document.querySelector(".off.ev2").addEventListener('click',envoyerCommande('reservoir/commande/ev2','OFF'));
+</script>
+</html>

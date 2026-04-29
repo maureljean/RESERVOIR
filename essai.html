@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tableau de bord</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    
+</head>
+
+<body>
+
+<div class="menu">
+    <a href="./index.html">Tableau de bord</a>
+    <a href="./commande.html">Commandes</a>
+    <a href="./historique.html">Historique</a>
+    <a href="./graphe.html">Graphes</a>
+</div>
+<!-- <button onclick="sendCommand('A1')"> ON </button>
+<button onclick="sendCommand('D1')"> OFF </button>
+<button onclick="sendCommand('A2')"> ON </button>
+<button onclick="sendCommand('D2')"> OFF </button>
+<p id="status"></p> -->
+
+<div class="content">
+    <h1>Tableau de bord</h1>
+
+    <div class="card">
+        <h3>Niveau Réservoir 1</h3>
+        <p id="status">-- %</p>
+    </div>
+
+    <div class="card">
+        <h3>Niveau Réservoir 2</h3>
+        <p id="status">-- %</p>
+    </div>
+
+    <div class="card">
+        <h3>Notifications</h3> -->
+        <p id="notify">Aucune</p>
+    </div>
+</div> -->
+<script>
+const broker = "wss://broker.hivemq.com:8884/mqtt";
+const client = mqtt.connect(broker);
+
+client.on("connect", () => {
+    console.log("✅ Connecté au broker MQTT");
+
+    client.subscribe("reservoir/cmd");
+    client.subscribe("reservoir/notify");
+    client.subscribe("reservoir/status");
+    client.subscribe("reservoir/lwt");})
+
+    
+
+
+function sendCommande(cmd) {
+    client.publish("reservoir/command", cmd);
+    console.log("Commande envoyée :", cmd);
+}
+
+client.on("message", (topic, message) => {
+    const msg = message.toString();
+    // console.log(topic + " : " + msg);
+    let texte = " ";
+
+    if (msg === "V1") texte = " EV1 ouvert";
+    else if (msg ==="V2") texte = " EV1 fermé";
+    else if( msg === "F1") texte = " EV2 ouvert";
+    else if (msg === "F2") texte = " EV2 fermé ";
+
+    document.getElementById(status).innerText = texte;
+})
+    </script>
+
+<!-- // <script src="mqtt.js"></script> -->
+
+</body>
+</html>

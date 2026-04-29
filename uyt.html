@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitoring Réservoir</title>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      color: #22c55e;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      margin: 15px;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .on { background: green; color: white; }
+    .off { background: red; color: white; }
+
+    #log {
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+      background: black;
+      padding: 10px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💧 Système Réservoir IoT</h1>
+
+<div class="card">
+  <h2>Electrovanne 1</h2>
+  <button class="on" onclick="sendCmd('A1')">ON</button>
+  <button class="off" onclick="sendCmd('D1')">OFF</button>
+</div>
+
+<div class="card">
+  <h2>Electrovanne 2</h2>
+  <button class="on" onclick="sendCmd('A2')">ON</button>
+  <button class="off" onclick="sendCmd('D2')">OFF</button>
+</div>
+
+<div class="card">
+  <h2>📊 Données</h2>
+  <p>Fût 1 : <span id="ft1">--</span> %</p>
+  <p>Fût 2 : <span id="ft2">--</span> %</p>
+</div>
+
+<div class="card">
+  <h2>🔔 Notifications</h2>
+  <p id="notify">Aucune</p>
+</div>
+
+<div class="card">
+  <h2>📜 Logs</h2>
+  <div id="log"></div>
+</div>
+
+<script>
+  // 🔐 CONFIG (REMPLACE PAR TES INFOS)
+  const options = {
+    username: "ESP8266",
+    password: "ReservoirFab0",
+    protocol: "wss"
+    
+  };
+
+  const client = mqtt.connect(
+    "wss://broker.hivemq.com:8884/mqtt",
+    options
+  );
+
+  // 📡 TOPICS (IDENTIQUES À TON ESP)
+  const TOPIC_STATUS = "reservoir/status";
+  const TOPIC_NOTIFY = "reservoir/notify";
+  const TOPIC_CMD    = "reservoir/cmd";
+  const TOPIC_ACK    = "reservoir/cmd/ack";
+
+  client.on("connect", () => {
+    log("✅ Connecté au broker MQTT");
+
+    client.subscribe(TOPIC_STATUS);
+    client.subscribe(TOPIC_NOTIFY);
+    client.subscribe(TOPIC_ACK);
+    client.subscribe(TOPIC_CMD);
+    client.publish(TOPIC_NOTIFY);
+  });
+
+  client.on("message", (topic, message) => {
+    let msg = message.toString();
+    if (topic === TOPIC_CMD){
+      log("📩 " + " commande vue sur broker "+ " → " + msg);
+
+    }
+  client.on("connect", () =>{
+    alert("connecté! ");
+  });
+
+    // 📊 DONNÉES JSON
+    if (topic === TOPIC_STATUS) {
+      try {
+        let data = JSON.parse(msg);
+
+        if (data.ft1 !== undefined)
+          document.getElementById("ft1").innerText = data.ft1;
+
+        if (data.ft2 !== undefined)
+          document.getElementById("ft2").innerText = data.ft2;
+
+      } catch (e) {}
+    }
+
+    // 🔔 NOTIFICATIONS
+    if (topic === TOPIC_NOTIFY) {
+      try {
+        let n = JSON.parse(msg);
+        document.getElementById("notify").innerText = n.message;
+      } catch (e) {}
+    }
+
+    // ✅ ACK commandes
+    if (topic === TOPIC_ACK) {
+      log("✔️ ACK reçu: " + msg);
+    }
+
+    if (topic=TOPIC_CMD) { log("broker a recu :" + msg);}
+  });
+
+  // 🚀 ENVOI COMMANDE
+  function sendCmd(cmd) {
+    client.publish(TOPIC_CMD, cmd);
+    log("📤 Commande envoyée : " + cmd);
+  }
+
+  // 📜 LOG UI
+  function log(text) {
+    let el = document.getElementById("log");
+    el.innerHTML += text + "<br>";
+    el.scrollTop = el.scrollHeight;
+  }
+</script>
+
+</body>
+</html>

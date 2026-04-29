@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historique</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="mqtt.js"></script>
+</head>
+
+<body>
+
+<div class="menu">
+    <a href="./index.html">Tableau de bord</a>
+    <a href="./commande.html">Commandes</a>
+    <a href="./historique.html">Historique</a>
+    <a href="./graphe.html">Graphes</a>
+</div>
+
+<div class="content">
+    <h1>Historique</h1>
+    <ul id="log"></ul>
+</div>
+
+
+
+<script>
+// Afficher historique sauvegardé
+let historique = JSON.parse(localStorage.getItem("historique")) || [];
+
+historique.forEach(item => {
+    let li = document.createElement("li");
+    li.innerText = `${item.date} | ${item.topic} : ${item.valeur}`;
+    document.getElementById("log").appendChild(li);
+});
+</script>
+
+</body>
+</html>
