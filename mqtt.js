@@ -105,7 +105,6 @@ client.on("disconnect", () => {
 // ===============================
 client.on("message", (topic, message) => {
     const msg = message.toString();
-    console.log(topic + " : " + msg);
 
     // ===== Topic: reservoir/status =====
     if (topic === "reservoir/status") {
