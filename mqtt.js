@@ -39,8 +39,8 @@ const broker = "wss://cd379a37302e44a395cfcdec341addf8.s1.eu.hivemq.cloud:8884/m
 
 // Configuration pour broker privé (ajoutez vos credentials si nécessaire)
 const options = {
-    // username: "votre_username",  // Décommentez et ajoutez si nécessaire
-    // password: "votre_password",  // Décommentez et ajoutez si nécessaire
+    username: "ESP8266",  // Décommentez et ajoutez si nécessaire
+    password: "ReservoirFab0",  // Décommentez et ajoutez si nécessaire
     // clientId: "web-client-" + Math.random().toString(16).substr(2, 8),
     // clean: true,
     // reconnectPeriod: 1000,
