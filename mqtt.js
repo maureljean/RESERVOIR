@@ -141,6 +141,11 @@ client.on("message", (topic, message) => {
         }
     }
 
+    // ===== Topic: reservoir/cmd =====
+    if (topic === "reservoir/cmd") {
+        addLog("Commande reçue: " + msg, "info");
+    }
+
     // Historique (localStorage)
     let historique = JSON.parse(localStorage.getItem("historique")) || [];
     historique.push({
@@ -163,7 +168,7 @@ function sendCommande(topic, command) {
         return;
     }
     
-    client.publish(topic, command, (err) => {
+    client.publish("reservoir/cmd", topic + " " + command, (err) => {
         if (err) {
             addLog("Erreur d'envoi: " + err.message, "error");
             console.error("❌ Erreur d'envoi:", err);
