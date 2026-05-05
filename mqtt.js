@@ -153,7 +153,9 @@ client.on("message", (topic, message) => {
 // ===============================
 // Envoi de commande
 // ==============================
-function sendCommande(cmd) {
+// Envoi de commande
+// ===============================
+function sendCommande(topic, command) {
     if (!client.connected) {
         addLog("Non connecté au broker MQTT!", "error");
         console.error("❌ Non connecté au broker MQTT!");
@@ -161,14 +163,14 @@ function sendCommande(cmd) {
         return;
     }
     
-    client.publish("reservoir/cmd", cmd, (err) => {
+    client.publish(topic, command, (err) => {
         if (err) {
             addLog("Erreur d'envoi: " + err.message, "error");
             console.error("❌ Erreur d'envoi:", err);
             alert("Erreur d'envoi: " + err.message);
         } else {
-            addLog("Commande envoyée: " + cmd, "success");
-            console.log("✅ Commande envoyée avec succès:", cmd);
+            addLog("Commande envoyée avec succès: " + topic + " " + command, "success");
+            console.log("✅ Commande envoyée avec succès:", topic, command);
         }
     });
 }
